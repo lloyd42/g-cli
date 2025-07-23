@@ -1,6 +1,8 @@
-# g-cli
+# @lloyd42/g-cli
 
-`g-cli` 是一个轻量级、可扩展的前端项目脚手架工具，旨在帮助您快速地从预设或自定义的模板创建新项目。
+[![NPM](https://img.shields.io/npm/v/@lloyd42/g-cli.svg)](https://www.npmjs.com/package/@lloyd42/g-cli)
+
+`@lloyd42/g-cli` 是一个轻量级、可扩展的前端项目脚手架工具，旨在帮助您快速地从预设或自定义的模板创建新项目。
 
 ## ✨ 功能特性
 
@@ -16,15 +18,13 @@
 
 ## 📦 安装
 
-要全局安装 `g-cli`，请运行以下命令：
+要全局安装 `@lloyd42/g-cli`，请运行以下命令：
 
 ```bash
-npm install -g .
+npm install -g @lloyd42/g-cli
 ```
 
-*(请在 `g-cli` 项目根目录下运行此命令)*
-
-安装完成后，您就可以在任何地方使用 `my-cli` 命令了。
+安装完成后，您就可以在任何地方使用 `g-cli` 命令了。
 
 ## 🚀 使用方法
 
@@ -33,7 +33,7 @@ npm install -g .
 这是 `g-cli` 的核心功能。运行以下命令开始创建项目：
 
 ```bash
-my-cli create
+g-cli create
 ```
 
 程序将会引导您完成以下步骤：
@@ -53,9 +53,9 @@ my-cli create
 要查看所有可用的模板（包括默认模板和您的自定义模板），请运行：
 
 ```bash
-my-cli list
+g-cli list
 # 或者使用别名
-my-cli ls
+g-cli ls
 ```
 
 #### 添加一个新模板
@@ -63,13 +63,13 @@ my-cli ls
 您可以将任何 Git 仓库作为模板添加到您的列表中：
 
 ```bash
-my-cli add <template-name> <git-repository-url>
+g-cli add <template-name> <git-repository-url>
 ```
 
 例如：
 
 ```bash
-my-cli add svelte-template https://github.com/user/svelte-template.git
+g-cli add svelte-template https://github.com/user/svelte-template.git
 ```
 
 #### 删除一个自定义模板
@@ -77,9 +77,9 @@ my-cli add svelte-template https://github.com/user/svelte-template.git
 要从您的列表中移除一个模板，请运行：
 
 ```bash
-my-cli delete <template-name>
+g-cli delete <template-name>
 # 或者使用别名
-my-cli rm <template-name>
+g-cli rm <template-name>
 ```
 
 **注意**: 您不能删除 `g-cli` 预设的默认模板。
@@ -89,7 +89,7 @@ my-cli rm <template-name>
 要查看用户自定义模板的配置文件 (`user-templates.json`) 的存储路径，请运行：
 
 ```bash
-my-cli config
+g-cli config
 ```
 
 ---
