@@ -1,18 +1,36 @@
 {
-  "name": "g-cli",
+  "name": "@lloyd42/g-cli",
   "version": "1.0.0",
-  "description": "",
+  "description": "A lightweight, flexible CLI for scaffolding front-end projects from templates.",
   "main": "dist/index.js",
   "bin": {
     "g-cli": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
     "postbuild": "copyfiles -u 1 src/**/*.json dist/"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "cli",
+    "scaffold",
+    "template",
+    "generator",
+    "frontend"
+  ],
+  "author": "lloyd42",
+  "license": "MIT",
+  "homepage": "https://github.com/lloyd42/g-cli#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lloyd42/g-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lloyd42/g-cli/issues"
+  },
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {
     "@types/degit": "^2.8.6",
