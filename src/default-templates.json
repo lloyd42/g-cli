@@ -1,4 +1,4 @@
 {
-  "react": "https://github.com/lloyd42/react-template.git#main",
-  "vue": "https://github.com/lloyd42/vue-template.git#main"
+	"react": "https://github.com/lloyd42/react-template.git#main",
+	"vue": "https://github.com/lloyd42/vue-template.git#main"
 }

@@ -1,56 +1,60 @@
 {
-  "name": "@lloyd42/g-cli",
-  "version": "1.0.0",
-  "description": "一个轻量、灵活的脚手架工具，用于从模板创建前端项目。",
-  "main": "dist/index.js",
-  "bin": {
-    "g-cli": "dist/index.js"
-  },
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "scripts": {
-    "build": "tsc",
-    "postbuild": "copyfiles -u 1 src/**/*.json dist/",
-    "test": "vitest",
-    "test:cov": "vitest run --coverage",
-    "test:e2e": "pnpm build && playwright test"
-  },
-  "keywords": [
-    "cli",
-    "scaffold",
-    "template",
-    "generator",
-    "frontend"
-  ],
-  "author": "lloyd42",
-  "license": "MIT",
-  "homepage": "https://github.com/lloyd42/g-cli#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lloyd42/g-cli.git"
-  },
-  "bugs": {
-    "url": "https://github.com/lloyd42/g-cli/issues"
-  },
-  "packageManager": "pnpm@10.13.1",
-  "devDependencies": {
-    "@playwright/test": "^1.45.3",
-    "@types/degit": "^2.8.6",
-    "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.0.15",
-    "@vitest/coverage-v8": "^3.2.4",
-    "copyfiles": "^2.4.1",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "chalk": "^5.4.1",
-    "commander": "^14.0.0",
-    "degit": "^2.8.4",
-    "fs-extra": "^11.2.0",
-    "inquirer": "^12.8.2",
-    "ora": "^8.2.0"
-  }
+	"name": "@lloyd42/g-cli",
+	"version": "1.0.0",
+	"description": "一个轻量、灵活的脚手架工具，用于从模板创建前端项目。",
+	"main": "dist/index.js",
+	"bin": {
+		"g-cli": "dist/index.js"
+	},
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsc",
+		"postbuild": "copyfiles -u 1 src/**/*.json dist/",
+		"format": "pnpm exec biome format --write",
+		"lint": "pnpm exec biome lint --write",
+		"check": "pnpm exec biome check --write",
+		"test": "vitest",
+		"test:cov": "vitest run --coverage",
+		"test:e2e": "pnpm build && playwright test"
+	},
+	"keywords": [
+		"cli",
+		"scaffold",
+		"template",
+		"generator",
+		"frontend"
+	],
+	"author": "lloyd42",
+	"license": "MIT",
+	"homepage": "https://github.com/lloyd42/g-cli#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/lloyd42/g-cli.git"
+	},
+	"bugs": {
+		"url": "https://github.com/lloyd42/g-cli/issues"
+	},
+	"packageManager": "pnpm@10.13.1",
+	"devDependencies": {
+		"@biomejs/biome": "2.1.2",
+		"@playwright/test": "^1.45.3",
+		"@types/degit": "^2.8.6",
+		"@types/fs-extra": "^11.0.4",
+		"@types/node": "^24.0.15",
+		"@vitest/coverage-v8": "^3.2.4",
+		"copyfiles": "^2.4.1",
+		"typescript": "^5.8.3",
+		"vitest": "^3.2.4"
+	},
+	"dependencies": {
+		"chalk": "^5.4.1",
+		"commander": "^14.0.0",
+		"degit": "^2.8.4",
+		"fs-extra": "^11.2.0",
+		"inquirer": "^12.8.2",
+		"ora": "^8.2.0"
+	}
 }
