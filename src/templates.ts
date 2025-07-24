@@ -10,7 +10,9 @@ export type Templates = {
 };
 
 // 用户配置目录
-const configDir = path.join(os.homedir(), '.g-cli');
+// Allow overriding the home directory for E2E testing purposes
+const homeDir = process.env.G_CLI_TEST_HOME_DIR || os.homedir();
+const configDir = path.join(homeDir, '.g-cli');
 // 用户模板文件路径
 export const userTemplatesPath = path.join(configDir, 'user-templates.json');
 
@@ -26,7 +28,8 @@ async function ensureUserTemplatesFile() {
       await fs.writeJson(userTemplatesPath, {});
     }
   } catch (err) {
-    console.error(chalk.red('Failed to create user template file:'), err);
+    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
+    console.error(chalk.red('Failed to create user template file:'), message);
     process.exit(1);
   }
 }
@@ -41,7 +44,8 @@ export async function getAllTemplates(): Promise<Templates> {
     // 合并模板，用户模板的优先级更高
     return { ...defaultTemplates, ...userTemplates };
   } catch (err) {
-    console.error(chalk.red('Failed to read template files:'), err);
+    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
+    console.error(chalk.red('Failed to read template files:'), message);
     return defaultTemplates; // 出错时回退到默认模板
   }
 }
@@ -95,9 +99,11 @@ function isValidDegitUrl(url: string): boolean {
 /**
  * 添加一个新模板到用户模板文件
  */
-export async function addTemplate(name: string, url: string) {
+export async function addTemplate(name: string, url: string, onError: (message: string) => void = (message) => { console.error(chalk.red(message)); process.exit(1); }) {
   if (!isValidTemplateName(name) || !isValidDegitUrl(url)) {
-    process.exit(1);
+    // The validation functions already log the specific error.
+    onError('Validation failed.');
+    return;
   }
 
   await ensureUserTemplatesFile();
@@ -110,17 +116,18 @@ export async function addTemplate(name: string, url: string) {
     await fs.writeJson(userTemplatesPath, userTemplates, { spaces: 2 });
     console.log(chalk.green(`Template "${name}" added successfully!`));
   } catch (err) {
-    console.error(chalk.red('Failed to add template:'), err);
-    process.exit(1);
+    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
+    onError(`Failed to add template: ${message}`);
   }
 }
 
 /**
  * 从用户模板文件中删除一个模板
  */
-export async function deleteTemplate(name: string) {
+export async function deleteTemplate(name: string, onError: (message: string) => void = (message) => { console.error(chalk.red(message)); process.exit(1); }) {
   if (!isValidTemplateName(name)) {
-    process.exit(1);
+    onError('Validation failed.');
+    return;
   }
 
   await ensureUserTemplatesFile();
@@ -141,7 +148,7 @@ export async function deleteTemplate(name: string) {
     await fs.writeJson(userTemplatesPath, userTemplates, { spaces: 2 });
     console.log(chalk.green(`Template "${name}" deleted successfully!`));
   } catch (err) {
-    console.error(chalk.red('Failed to delete template:'), err);
-    process.exit(1);
+    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
+    onError(`Failed to delete template: ${message}`);
   }
 }

@@ -12,7 +12,10 @@
   ],
   "scripts": {
     "build": "tsc",
-    "postbuild": "copyfiles -u 1 src/**/*.json dist/"
+    "postbuild": "copyfiles -u 1 src/**/*.json dist/",
+    "test": "vitest",
+    "test:cov": "vitest run --coverage",
+    "test:e2e": "playwright test"
   },
   "keywords": [
     "cli",
@@ -37,7 +40,10 @@
     "@types/node": "^24.0.15",
     "@types/fs-extra": "^11.0.4",
     "typescript": "^5.8.3",
-    "copyfiles": "^2.4.1"
+    "copyfiles": "^2.4.1",
+    "vitest": "^2.0.4",
+    "@vitest/coverage-v8": "^2.0.4",
+    "@playwright/test": "^1.45.3"
   },
   "dependencies": {
     "fs-extra": "^11.2.0",

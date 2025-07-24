@@ -24,3 +24,8 @@ pnpm-debug.log*
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Tests output
+/test-results
+/playwright-report
+/coverage

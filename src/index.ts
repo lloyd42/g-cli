@@ -99,7 +99,7 @@ program
       rmSync(targetPath, { recursive: true, force: true });
     }
 
-    // 3. 3. 下载模板（使用 degit）
+    // 3. 下载模板（使用 degit）
     const spinner = ora('Downloading template...').start();
     const emitter = degit(templates[framework], {
       force: true, // 覆盖目标目录
@@ -206,7 +206,10 @@ program
     const templates = await getAllTemplates();
     console.log(chalk.bold.cyan('Available templates:'));
     Object.entries(templates).forEach(([name, url]) => {
-      console.log(`  ${chalk.green(name)}: ${chalk.gray(url)}`);
+      // Construct the string manually to ensure consistent output, especially in non-TTY environments
+      const namePart = chalk.green(name);
+      const urlPart = chalk.gray(url);
+      console.log(`  ${namePart}: ${urlPart}`);
     });
   });
 
