@@ -32,7 +32,7 @@ async function updateProjectName(projectPath: string, projectName: string) {
       'utf-8'
     );
   } catch (err) {
-    console.log(chalk.yellow('Warning: Failed to update package.json name.'));
+    console.log(chalk.yellow('警告：更新 package.json 名称失败。'));
   }
 }
 
@@ -40,14 +40,14 @@ const program = new Command();
 
 program
   .name('my-cli')
-  .description('A simple CLI for creating front-end projects from templates.')
+  .description('一个用于从模板创建前端项目的简单CLI。')
   .version('1.0.0');
 
 // 定义模板仓库信息
 
 program
   .command('create')
-  .description('Create a new project from a template')
+  .description('从模板创建一个新项目')
   .action(async () => {
     const templates = await getAllTemplates();
     const templateChoices = Object.keys(templates);
@@ -60,12 +60,12 @@ program
       {
         type: 'input',
         name: 'projectName',
-        message: 'Project name:',
+        message: '项目名称:',
         default: 'my-app', // 默认值
         validate: (input: string) => {
-          if (!input.trim()) return 'Project name cannot be empty!';
+          if (!input.trim()) return '项目名称不能为空！';
           if (!/^[a-z0-9-]+$/.test(input)) {
-            return 'Only lowercase letters, numbers, and hyphens are allowed!';
+            return '只允许使用小写字母、数字和连字符！';
           }
           return true;
         },
@@ -73,7 +73,7 @@ program
       {
         type: 'list',
         name: 'framework',
-        message: 'Please choose which project template to use',
+        message: '请选择要使用的项目模板',
         choices: templateChoices,
       },
     ]);
@@ -87,12 +87,12 @@ program
         {
           type: 'confirm',
           name: 'overwrite',
-          message: `Directory "${projectName}" already exists. Overwrite?`,
+          message: `目录 "${projectName}" 已存在。是否覆盖？`,
           default: false,
         },
       ]);
       if (!overwrite) {
-        console.log(chalk.yellow('Operation cancelled.'));
+        console.log(chalk.yellow('操作已取消。'));
         process.exit(1);
       }
       // 删除旧目录
@@ -100,7 +100,7 @@ program
     }
 
     // 3. 下载模板（使用 degit）
-    const spinner = ora('Downloading template...').start();
+    const spinner = ora('正在下载模板...').start();
     const emitter = degit(templates[framework], {
       force: true, // 覆盖目标目录
       verbose: true, // 打印更多日志
@@ -112,28 +112,28 @@ program
 
     try {
       await emitter.clone(targetPath);
-      spinner.succeed(chalk.green('Template downloaded successfully!'));
+      spinner.succeed(chalk.green('模板下载成功！'));
 
       // 4. 动态替换项目名称（如 package.json）
       await updateProjectName(targetPath, projectName);
 
       // 5. 完成提示
-      console.log(chalk.green(`\nSuccess! Created ${projectName} at ${targetPath}`));
-      console.log(chalk.green(`\nSuccess! Created ${projectName} at ${targetPath}`));
+      console.log(chalk.green(`\n成功！项目 ${projectName} 已创建在 ${targetPath}`));
 
       // 6. 询问是否安装依赖
       const { install } = await inquirer.prompt([
         {
           type: 'confirm',
           name: 'install',
-          message: 'Do you want to install dependencies now?',
+          message: '是否立即安装依赖？',
           default: true,
         },
       ]);
 
       if (install) {
-        const installSpinner = ora('Installing dependencies...').start();
+        const installSpinner = ora('正在安装依赖...').start();
         try {
+          // 使用 Promise 包装 exec，以便在异步流程中正确处理其回调
           await new Promise((resolve, reject) => {
             exec('npm install', { cwd: targetPath }, (error, stdout, stderr) => {
               if (error) {
@@ -143,8 +143,8 @@ program
               resolve(stdout);
             });
           });
-          installSpinner.succeed(chalk.green('Dependencies installed successfully!'));
-          console.log(chalk.cyan('\nNext steps:'));
+          installSpinner.succeed(chalk.green('依赖安装成功！'));
+          console.log(chalk.cyan('\n后续步骤:'));
           console.log(chalk.cyan(`  cd ${projectName}`));
           console.log(chalk.cyan('  npm run dev\n'));
 
@@ -153,14 +153,15 @@ program
             {
               type: 'confirm',
               name: 'initGit',
-              message: 'Do you want to initialize a Git repository?',
+              message: '是否初始化Git仓库？',
               default: true,
             },
           ]);
 
           if (initGit) {
-            const gitSpinner = ora('Initializing Git repository...').start();
+            const gitSpinner = ora('正在初始化Git仓库...').start();
             try {
+              // 链式执行 git 命令
               await new Promise((resolve, reject) => {
                 exec('git init && git add . && git commit -m "Initial commit"', { cwd: targetPath }, (error, stdout, stderr) => {
                   if (error) {
@@ -170,29 +171,29 @@ program
                   resolve(stdout);
                 });
               });
-              gitSpinner.succeed(chalk.green('Git repository initialized successfully!'));
+              gitSpinner.succeed(chalk.green('Git仓库初始化成功！'));
             } catch (gitErr) {
-              gitSpinner.fail(chalk.red('Failed to initialize Git repository.'));
+              gitSpinner.fail(chalk.red('初始化Git仓库失败。'));
               console.error(chalk.red(gitErr));
             }
           }
         } catch (installErr) {
-          installSpinner.fail(chalk.red('Failed to install dependencies.'));
+          installSpinner.fail(chalk.red('依赖安装失败。'));
           console.error(chalk.red(installErr));
-          console.log(chalk.cyan('\nPlease install dependencies manually.'));
+          console.log(chalk.cyan('\n请手动安装依赖。'));
         }
       } else {
-        console.log(chalk.cyan('\nNext steps:'));
+        console.log(chalk.cyan('\n后续步骤:'));
         console.log(chalk.cyan(`  cd ${projectName}`));
         console.log(chalk.cyan('  npm install'));
         console.log(chalk.cyan('  npm run dev\n'));
       }
     } catch (err) {
-      spinner.fail(chalk.red('Failed to download template.'));
+      spinner.fail(chalk.red('模板下载失败。'));
       if (err instanceof Error) {
         console.error(chalk.red(err.message));
       } else {
-        console.error(chalk.red('An unknown error occurred.'));
+        console.error(chalk.red('发生未知错误。'));
       }
       process.exit(1);
     }
@@ -201,12 +202,12 @@ program
 program
   .command('list')
   .alias('ls')
-  .description('List all available templates')
+  .description('列出所有可用的模板')
   .action(async () => {
     const templates = await getAllTemplates();
-    console.log(chalk.bold.cyan('Available templates:'));
+    console.log(chalk.bold.cyan('可用模板:'));
     Object.entries(templates).forEach(([name, url]) => {
-      // Construct the string manually to ensure consistent output, especially in non-TTY environments
+      // 手动构造字符串以确保输出一致，尤其是在非终端环境中
       const namePart = chalk.green(name);
       const urlPart = chalk.gray(url);
       console.log(`  ${namePart}: ${urlPart}`);
@@ -215,7 +216,7 @@ program
 
 program
   .command('add <name> <url>')
-  .description('Add a new template')
+  .description('添加一个新模板')
   .action((name, url) => {
     addTemplate(name, url);
   });
@@ -223,16 +224,16 @@ program
 program
   .command('delete <name>')
   .alias('rm')
-  .description('Delete a template')
+  .description('删除一个模板')
   .action((name) => {
     deleteTemplate(name);
   });
 
 program
     .command('config')
-    .description('Show the path to the user templates configuration file')
+    .description('显示用户模板配置文件的路径')
     .action(() => {
-        console.log(chalk.bold.cyan('User templates file path:'));
+        console.log(chalk.bold.cyan('用户模板文件路径:'));
         console.log(userTemplatesPath);
     });
 

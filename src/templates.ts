@@ -10,7 +10,7 @@ export type Templates = {
 };
 
 // 用户配置目录
-// Allow overriding the home directory for E2E testing purposes
+// 允许为了 E2E 测试覆盖 home 目录
 const homeDir = process.env.G_CLI_TEST_HOME_DIR || os.homedir();
 const configDir = path.join(homeDir, '.g-cli');
 // 用户模板文件路径
@@ -28,8 +28,8 @@ async function ensureUserTemplatesFile() {
       await fs.writeJson(userTemplatesPath, {});
     }
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
-    console.error(chalk.red('Failed to create user template file:'), message);
+    const message = err instanceof Error ? err.message : '发生未知错误。';
+    console.error(chalk.red('创建用户模板文件失败:'), message);
     process.exit(1);
   }
 }
@@ -44,8 +44,8 @@ export async function getAllTemplates(): Promise<Templates> {
     // 合并模板，用户模板的优先级更高
     return { ...defaultTemplates, ...userTemplates };
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
-    console.error(chalk.red('Failed to read template files:'), message);
+    const message = err instanceof Error ? err.message : '发生未知错误。';
+    console.error(chalk.red('读取模板文件失败:'), message);
     return defaultTemplates; // 出错时回退到默认模板
   }
 }
@@ -56,11 +56,11 @@ export async function getAllTemplates(): Promise<Templates> {
  */
 function isValidTemplateName(name: string): boolean {
     if (!name.trim()) {
-        console.error(chalk.red('Template name cannot be empty!'));
+        console.error(chalk.red('模板名称不能为空！'));
         return false;
     }
     if (!/^[a-z0-9-]+$/.test(name)) {
-        console.error(chalk.red('Template name can only contain lowercase letters, numbers, and hyphens!'));
+        console.error(chalk.red('模板名称只能包含小写字母、数字和连字符！'));
         return false;
     }
     return true;
@@ -72,7 +72,7 @@ function isValidTemplateName(name: string): boolean {
  * @param url The URL to validate
  */
 function isValidDegitUrl(url: string): boolean {
-  // Based on the official degit documentation, we support multiple formats.
+  // 基于 degit 官方文档，我们支持多种格式。
   const patterns = [
     // user/repo
     // git.sr.ht/user/repo
@@ -88,8 +88,8 @@ function isValidDegitUrl(url: string): boolean {
   const isValid = patterns.some(pattern => pattern.test(url));
 
   if (!isValid) {
-    console.error(chalk.red(`Invalid template URL: "${url}". Please use a valid degit format.`));
-    console.log(chalk.cyan("Examples: 'user/repo', 'github:user/repo', 'https://github.com/user/repo'"));
+    console.error(chalk.red(`无效的模板 URL: "${url}"。请使用有效的 degit 格式。`));
+    console.log(chalk.cyan("例如: 'user/repo', 'github:user/repo', 'https://github.com/user/repo'"));
     return false;
   }
 
@@ -101,8 +101,8 @@ function isValidDegitUrl(url: string): boolean {
  */
 export async function addTemplate(name: string, url: string, onError: (message: string) => void = (message) => { console.error(chalk.red(message)); process.exit(1); }) {
   if (!isValidTemplateName(name) || !isValidDegitUrl(url)) {
-    // The validation functions already log the specific error.
-    onError('Validation failed.');
+    // 校验函数已经打印了具体的错误。
+    onError('校验失败。');
     return;
   }
 
@@ -110,14 +110,14 @@ export async function addTemplate(name: string, url: string, onError: (message: 
   try {
     const userTemplates = await fs.readJson(userTemplatesPath) as Templates;
     if (userTemplates[name]) {
-      console.log(chalk.yellow(`Template "${name}" already exists. It will be overwritten.`));
+      console.log(chalk.yellow(`模板 "${name}" 已存在。它将被覆盖。`));
     }
     userTemplates[name] = url;
     await fs.writeJson(userTemplatesPath, userTemplates, { spaces: 2 });
-    console.log(chalk.green(`Template "${name}" added successfully!`));
+    console.log(chalk.green(`模板 "${name}" 添加成功！`));
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
-    onError(`Failed to add template: ${message}`);
+    const message = err instanceof Error ? err.message : '发生未知错误。';
+    onError(`添加模板失败: ${message}`);
   }
 }
 
@@ -126,7 +126,7 @@ export async function addTemplate(name: string, url: string, onError: (message: 
  */
 export async function deleteTemplate(name: string, onError: (message: string) => void = (message) => { console.error(chalk.red(message)); process.exit(1); }) {
   if (!isValidTemplateName(name)) {
-    onError('Validation failed.');
+    onError('校验失败。');
     return;
   }
 
@@ -134,21 +134,21 @@ export async function deleteTemplate(name: string, onError: (message: string) =>
   try {
     // 检查是否为默认模板
     if (defaultTemplates.hasOwnProperty(name)) {
-      console.log(chalk.red(`Cannot delete default template "${name}".`));
+      console.log(chalk.red(`不能删除默认模板 "${name}"。`));
       return;
     }
 
     const userTemplates = await fs.readJson(userTemplatesPath) as Templates;
     if (!userTemplates[name]) {
-      console.log(chalk.yellow(`Template "${name}" not found in user templates.`));
+      console.log(chalk.yellow(`在用户模板中未找到模板 "${name}"。`));
       return;
     }
 
     delete userTemplates[name];
     await fs.writeJson(userTemplatesPath, userTemplates, { spaces: 2 });
-    console.log(chalk.green(`Template "${name}" deleted successfully!`));
+    console.log(chalk.green(`模板 "${name}" 删除成功！`));
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
-    onError(`Failed to delete template: ${message}`);
+    const message = err instanceof Error ? err.message : '发生未知错误。';
+    onError(`删除模板失败: ${message}`);
   }
 }
